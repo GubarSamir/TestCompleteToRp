@@ -14,7 +14,8 @@ def code_of_test_suite(name):
         [suite[i + 1].get(key='value')[:23] \
          for i in range(len(suite)) if suite[i].get(key='name') == \
          'nameofroot' and suite[i].get(key='value') == name]
-    word = str(name_of_test_suite[0])
+    last_test = name_of_test_suite[::-1]
+    word = str(last_test[0])
     tipe = ''
     for letter in word:
         if letter != '\\':
@@ -22,6 +23,7 @@ def code_of_test_suite(name):
         else:
             break
     return tipe
+
 
 file = 'C:\\Users\\sa.gubar\\Documents\\ImportAutotest\\name.txt'
 with open(file, encoding='utf8') as reader:

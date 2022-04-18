@@ -149,6 +149,26 @@ def sorted_name_file():
                     break
     return sorted_name
 
+def sorted_status():
+    file = open_file(link.sum_test)
+    ownermoniker = [i.get(key='value') for i in file if i.get(key='name') == 'ownermoniker']
+    ownermoniker_file = f'{link.suit}{ownermoniker[0]}'
+    moniker_file = open_node_file(f'{link.suit}{ownermoniker[0]}')
+    unsort_moniker = [i.get(key='name') for i in moniker_file if i.get(key='name')[:3] == 'row']
+    unsort_name = [i.get(key='value') for i in open_file(ownermoniker_file) if i.get(key='name') == 'status']
+    unsorted_dict = [{unsort_moniker[i]: unsort_name[i]} for i in range(len(unsort_moniker))]
+    one = [unsort_moniker[i] for i in range(len(unsort_moniker)) if len(unsort_moniker[i]) == 4]
+    two = [unsort_moniker[i] for i in range(len(unsort_moniker)) if len(unsort_moniker[i]) == 5]
+    one_and_two = sorted(one) + sorted(two)
+    sorted_name = []
+    for details in range(len(one_and_two)):
+        for i in range(len(unsorted_dict)):
+            for kay, val in unsorted_dict[i].items():
+                if one_and_two[details] == kay:
+                    sorted_name.append(val)
+                    break
+    return sorted_name
+
 
 def test_open(rp_logger):
     summary = open_file(link.summar)
@@ -160,8 +180,13 @@ def test_open(rp_logger):
     rp_logger.info(f"Failed tests = {str(failedtests[0])}")
     sorted_name = sorted_name_file()
     sorted_moniker = sorted_moniker_file()
-    for ts_name in range(len(sorted_name)):
-        rp_logger.info(f'                              {sorted_name[ts_name]}                              ')
+
+    for ts_name in range(len(sorted_name_file())):
+        if sorted_status()[ts_name] == '0':
+            status = 'PASSSED'
+        else:
+            status = 'FAILED'
+        rp_logger.info(f'                              {sorted_name[ts_name]}           {status}                   ')
         message = sorted_massage(f'{link.suit}{sorted_moniker[ts_name]}')
         picture = sorted_picture(f'{link.suit}{sorted_moniker[ts_name]}')
         for i in range(len(message)):
@@ -170,34 +195,5 @@ def test_open(rp_logger):
             else:
                 rp_logger.info(f"{message[i]}",
                                attachment={"data": open_screen(picture[i]), "mime": "image/png"})
+
     return None
-
-
-
-
-
-
-
-
-
-# def test_open(rp_logger):
-#     summary = open_file(link.summar)
-#     failedtests = [summary[i].get(key='value') for i in range(len(summary)) if summary[i].get(key='name') == 'failedtests']
-#     alltests = [summary[i].get(key='value') for i in range(len(summary)) if summary[i].get(key='name') == 'tests']
-#     rp_logger.info(f"TestCase = {descriptions('root logdata name')}")
-#     rp_logger.info(f"Time of test = {get_time()}")
-#     rp_logger.info(f"Count of test = {str(alltests[0])}")
-#     rp_logger.info(f"Failed tests = {str(failedtests[0])}")
-#     sorted_name = sorted_name_file()
-#     sorted_moniker = sorted_moniker_file()
-#     for ts_name in range(len(sorted_name)):
-#         rp_logger.info(f'                              {sorted_name[ts_name]}                              ')
-#         message = sorted_massage(f'{link.suit}{sorted_moniker[ts_name]}')
-#         picture = sorted_picture(f'{link.suit}{sorted_moniker[ts_name]}')
-#         for i in range(len(message)):
-#             if picture[i] == '':
-#                 rp_logger.info(f"{message[i]}")
-#             else:
-#                 rp_logger.info(f"{message[i]}",
-#                                attachment={"data": open_screen(picture[i]), "mime": "image/png"})
-#     return None
